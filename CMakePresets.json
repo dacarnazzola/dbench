@@ -31,6 +31,71 @@
         "CMAKE_CXX_COMPILER": "g++",
         "CMAKE_Fortran_FLAGS": "-Ofast -march=native -flto -lopenblas"
       }
+    },
+    {
+      "name": "release-ifort-openblas",
+      "displayName": "ifort RELEASE (OpenBLAS)",
+      "description": "release options for building with ifort + OpenBLAS",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_Fortran_COMPILER": "ifort",
+        "CMAKE_C_COMPILER": "icc",
+        "CMAKE_CXX_COMPILER": "icpc",
+        "CMAKE_Fortran_FLAGS": "-Ofast -march=core-avx2 -ipo -lopenblas"
+      }
+    },
+    {
+      "name": "release-ifort-mkl",
+      "displayName": "ifort RELEASE (MKL)",
+      "description": "release options for building with ifort + MKL",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_Fortran_COMPILER": "ifort",
+        "CMAKE_C_COMPILER": "icc",
+        "CMAKE_CXX_COMPILER": "icpc",
+        "CMAKE_Fortran_FLAGS": "-Ofast -march=core-avx2 -ipo -qmkl"
+      }
+    },
+    {
+      "name": "release-ifx-openblas",
+      "displayName": "ifx RELEASE (OpenBLAS)",
+      "description": "release options for building with ifx + OpenBLAS",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_Fortran_COMPILER": "ifx",
+        "CMAKE_C_COMPILER": "icx",
+        "CMAKE_CXX_COMPILER": "icpx",
+        "CMAKE_Fortran_FLAGS": "-Ofast -march=core-avx2 -ipo -lopenblas"
+      }
+    },
+    {
+      "name": "release-ifx-mkl",
+      "displayName": "ifx RELEASE (MKL)",
+      "description": "release options for building with ifx + MKL",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_Fortran_COMPILER": "ifx",
+        "CMAKE_C_COMPILER": "icx",
+        "CMAKE_CXX_COMPILER": "icpx",
+        "CMAKE_Fortran_FLAGS": "-Ofast -march=core-avx2 -ipo -qmkl"
+      }
+    },
+    {
+      "name": "release-flang-openblas",
+      "displayName": "flang RELEASE (OpenBLAS)",
+      "description": "release options for building with flang + OpenBLAS",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_Fortran_COMPILER": "flang",
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang",
+        "CMAKE_Fortran_FLAGS": "-Ofast -march=native -flto -lopenblas"
+      }
     }
   ]
 }

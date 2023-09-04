@@ -14,11 +14,11 @@ private
     public :: benchmark_config, benchmark_all
 
     type :: benchmark_config
-        integer :: max_reps = 100
+        integer :: max_reps = 10
         integer :: output_fid = stdout
-        integer :: n_min = 1
-        integer :: n_max = 2000
-        integer :: n_step = 1
+        integer :: n_min = 8
+        integer :: n_max = 256
+        integer :: n_step = 8
     end type
 
     interface

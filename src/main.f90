@@ -56,4 +56,6 @@ implicit none
     call benchmark_all(config)
     close(config%output_fid)
 
+    write(stdout,'(a)') 'COMPLETE!!'
+
 end program main
