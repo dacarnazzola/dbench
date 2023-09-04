@@ -11,7 +11,7 @@ use, non_intrinsic :: external_blas_m, only: external_sdot, &
 implicit none
 private
 
-    public :: benchmark_config, benchmark_all
+    public :: benchmark_config, echo_config, benchmark_all
 
     type :: benchmark_config
         integer :: max_reps = 10
@@ -19,6 +19,7 @@ private
         integer :: n_min = 8
         integer :: n_max = 256
         integer :: n_step = 8
+        character :: delimiter = '|'
     end type
 
     interface
@@ -50,6 +51,16 @@ private
     end interface
 
     contains
+
+        impure elemental subroutine echo_config(config)
+            type(benchmark_config), intent(in) :: config
+            write(stdout,'(a,i0)') 'OUTPUT_FID: ',config%output_fid
+            write(stdout,'(a,i0)') 'MAX_REPS: ',config%max_reps
+            write(stdout,'(a,i0)') 'N_MIN: ',config%n_min
+            write(stdout,'(a,i0)') 'N_MAX: ',config%n_max
+            write(stdout,'(a,i0)') 'N_STEP: ',config%n_step
+            write(stdout,'(a)') 'N_STEP: '//config%delimiter
+        end subroutine echo_config
 
         impure subroutine benchmark_all(config)
             type(benchmark_config), intent(in) :: config
@@ -101,11 +112,11 @@ private
                 write(stdout,'(a32,a,i0,a,i0,a,f0.2,a,e13.6,a)') label,' completed ',config%max_reps,' reps of size ',n, &
                                                                  ' with average ',avg_gflops,' GFLOPS (',maxval(c),')'
                 flush(stdout)
-                write(config%output_fid,'(6a,i0,2(a,e13.6))') trim(adjustl(fc_ver())),',', &
-                                                              trim(adjustl(fc_opt())),',', &
-                                                              label,',', &
-                                                              n,',', &
-                                                              avg_elapsed,',', &
+                write(config%output_fid,'(6a,i0,2(a,e13.6))') trim(adjustl(fc_ver())),config%delimiter, &
+                                                              trim(adjustl(fc_opt())),config%delimiter, &
+                                                              label,config%delimiter, &
+                                                              n,config%delimiter, &
+                                                              avg_elapsed,config%delimiter, &
                                                               avg_gflops
                 flush(config%output_fid)
             end do size_loop
@@ -140,11 +151,11 @@ private
                 write(stdout,'(a32,a,i0,a,i0,a,f0.2,a,e13.6,a)') label,' completed ',config%max_reps,' reps of size ',n, &
                                                                  ' with average ',avg_gflops,' GFLOPS (',maxval(c),')'
                 flush(stdout)
-                write(config%output_fid,'(6a,i0,2(a,e13.6))') trim(adjustl(fc_ver())),',', &
-                                                              trim(adjustl(fc_opt())),',', &
-                                                              label,',', &
-                                                              n,',', &
-                                                              avg_elapsed,',', &
+                write(config%output_fid,'(6a,i0,2(a,e13.6))') trim(adjustl(fc_ver())),config%delimiter, &
+                                                              trim(adjustl(fc_opt())),config%delimiter, &
+                                                              label,config%delimiter, &
+                                                              n,config%delimiter, &
+                                                              avg_elapsed,config%delimiter, &
                                                               avg_gflops
                 flush(config%output_fid)
             end do size_loop
@@ -179,11 +190,11 @@ private
                 write(stdout,'(a32,a,i0,a,i0,a,f0.2,a,e13.6,a)') label,' completed ',config%max_reps,' reps of size ',n, &
                                                                  ' with average ',avg_gflops,' GFLOPS (',maxval(c),')'
                 flush(stdout)
-                write(config%output_fid,'(6a,i0,2(a,e13.6))') trim(adjustl(fc_ver())),',', &
-                                                              trim(adjustl(fc_opt())),',', &
-                                                              label,',', &
-                                                              n,',', &
-                                                              avg_elapsed,',', &
+                write(config%output_fid,'(6a,i0,2(a,e13.6))') trim(adjustl(fc_ver())),config%delimiter, &
+                                                              trim(adjustl(fc_opt())),config%delimiter, &
+                                                              label,config%delimiter, &
+                                                              n,config%delimiter, &
+                                                              avg_elapsed,config%delimiter, &
                                                               avg_gflops
                 flush(config%output_fid)
             end do size_loop
@@ -218,11 +229,11 @@ private
                 write(stdout,'(a32,a,i0,a,i0,a,f0.2,a,e13.6,a)') label,' completed ',config%max_reps,' reps of size ',n, &
                                                                  ' with average ',avg_gflops,' GFLOPS (',maxval(c),')'
                 flush(stdout)
-                write(config%output_fid,'(6a,i0,2(a,e13.6))') trim(adjustl(fc_ver())),',', &
-                                                              trim(adjustl(fc_opt())),',', &
-                                                              label,',', &
-                                                              n,',', &
-                                                              avg_elapsed,',', &
+                write(config%output_fid,'(6a,i0,2(a,e13.6))') trim(adjustl(fc_ver())),config%delimiter, &
+                                                              trim(adjustl(fc_opt())),config%delimiter, &
+                                                              label,config%delimiter, &
+                                                              n,config%delimiter, &
+                                                              avg_elapsed,config%delimiter, &
                                                               avg_gflops
                 flush(config%output_fid)
             end do size_loop

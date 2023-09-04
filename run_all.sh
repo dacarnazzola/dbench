@@ -1,10 +1,10 @@
 #!/bin/bash
 
 export OUTPUT_FILE="output.csv"
-export MAX_REPS=20
-export N_MIN=8
-export N_MAX=256
-export N_STEP=8
+export MAX_REPS=100
+export N_MIN=1
+export N_MAX=300
+export N_STEP=1
 
 export OMP_NUM_THREADS=1
 export MKL_NUM_THREADS=1

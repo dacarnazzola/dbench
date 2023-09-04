@@ -1,6 +1,6 @@
 program main
 use, non_intrinsic :: constants_m, only: stdout, i64
-use, non_intrinsic :: benchmark_m, only: benchmark_config, benchmark_all
+use, non_intrinsic :: benchmark_m, only: benchmark_config, echo_config, benchmark_all
 implicit none
 
     type(benchmark_config) :: config
@@ -25,6 +25,7 @@ implicit none
             write(stdout,'(a)') 'invalid input arguments received, valid keywords are:'
             write(stdout,'(a)') '    --max_reps    - number of repetitions to average for benchmark results'
             write(stdout,'(a)') '    --output_file - output file name'
+            write(stdout,'(a)') '    --delimiter   - output file delimiter'
             write(stdout,'(a)') '    --n_min       - minimum dot product vector length/matrix multiplication side length'
             write(stdout,'(a)') '    --n_max       - maximum dot product vector length/matrix multiplication side length'
             write(stdout,'(a)') '    --n_step      - step size from n_min to n_max'
@@ -37,6 +38,8 @@ implicit none
                     read(argv_buffer,*) config%max_reps
                 case ('--output_file')
                     output_file = trim(adjustl(argv_buffer))
+                case ('--delimiter')
+                    read(argv_buffer,*) config%delimiter
                 case ('--n_min')
                     read(argv_buffer,*) config%n_min
                 case ('--n_max')
@@ -50,7 +53,7 @@ implicit none
         end do
     end if
 
-    write(stdout,'(a,i0)') 'output_file: '//output_file//', max_reps: ',config%max_reps
+    call echo_config(config)
     
     open(newunit=config%output_fid, file=output_file, status='unknown', action='write', position='append')
     call benchmark_all(config)
