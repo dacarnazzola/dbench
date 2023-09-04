@@ -3,10 +3,8 @@ use, non_intrinsic :: constants_m, only: sp, dp
 implicit none
 private
 
-    public :: intrinsic_dot_product_sp, &
-              intrinsic_dot_product_dp, &
-              intrinsic_matmul_sp, &
-              intrinsic_matmul_dp
+    public :: intrinsic_dot_product_sp, intrinsic_dot_product_dp, &
+              intrinsic_matmul_sp, intrinsic_matmul_dp
 
     contains
 

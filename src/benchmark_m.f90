@@ -1,21 +1,12 @@
 module benchmark_m
 use, non_intrinsic :: constants_m, only: i64, sp, dp, stdout, fc_ver, fc_opt
-use, non_intrinsic :: language_intrinsic_functions_m, only: intrinsic_dot_product_sp, &
-                                                            intrinsic_dot_product_dp, &
-                                                            intrinsic_matmul_sp, &
-                                                            intrinsic_matmul_dp
-use, non_intrinsic :: external_blas_m, only: external_sdot, &
-                                             external_ddot, &
-                                             external_sgemm, &
-                                             external_dgemm
-use, non_intrinsic :: user_dot_product_m, only: do_dot_dp, &
-                                                do_dot_unroll2_dp, &
-                                                do_dot_unroll3_dp, &
-                                                do_dot_unroll4_dp, &
-                                                do_dot_unroll5_dp, &
-                                                do_dot_unroll6_dp, &
-                                                do_dot_unroll7_dp, &
-                                                do_dot_unroll8_dp
+use, non_intrinsic :: language_intrinsic_functions_m, only: intrinsic_dot_product_sp, intrinsic_dot_product_dp, &
+                                                            intrinsic_matmul_sp, intrinsic_matmul_dp
+use, non_intrinsic :: external_blas_m, only: external_sdot, external_ddot, external_sgemm, external_dgemm
+use, non_intrinsic :: user_dot_product_m, only: do_dot_sp, do_dot_dp, do_dot_unroll2_sp, do_dot_unroll2_dp, do_dot_unroll3_sp, &
+                                                do_dot_unroll3_dp, do_dot_unroll4_sp, do_dot_unroll4_dp, do_dot_unroll5_sp, &
+                                                do_dot_unroll5_dp, do_dot_unroll6_sp, do_dot_unroll6_dp, do_dot_unroll7_sp, &
+                                                do_dot_unroll7_dp, do_dot_unroll8_sp, do_dot_unroll8_dp
 implicit none
 private
 
@@ -74,8 +65,16 @@ private
             type(benchmark_config), intent(in) :: config
 
             write(stdout,'(a)') 'Beginning benchmark ... Single-Precision (real32) DOT PRODUCT'
-            call benchmark_one_dot_product_sp(intrinsic_dot_product_sp, 'intrinsic dot_product sp', config)
-            call benchmark_one_dot_product_sp(           external_sdot,            'external sdot', config)
+            call benchmark_one_dot_product_sp(intrinsic_dot_product_sp,         'intrinsic dot_product sp', config)
+            call benchmark_one_dot_product_sp(           external_sdot,                    'external sdot', config)
+            call benchmark_one_dot_product_sp(               do_dot_sp,           'do-loop dot product sp', config)
+            call benchmark_one_dot_product_sp(       do_dot_unroll2_sp,'do-loop dot product urolled x2 sp', config)
+            call benchmark_one_dot_product_sp(       do_dot_unroll3_sp,'do-loop dot product urolled x3 sp', config)
+            call benchmark_one_dot_product_sp(       do_dot_unroll4_sp,'do-loop dot product urolled x4 sp', config)
+            call benchmark_one_dot_product_sp(       do_dot_unroll5_sp,'do-loop dot product urolled x5 sp', config)
+            call benchmark_one_dot_product_sp(       do_dot_unroll6_sp,'do-loop dot product urolled x6 sp', config)
+            call benchmark_one_dot_product_sp(       do_dot_unroll7_sp,'do-loop dot product urolled x7 sp', config)
+            call benchmark_one_dot_product_sp(       do_dot_unroll8_sp,'do-loop dot product urolled x8 sp', config)
 
             write(stdout,'(a)') 'Beginning benchmark ... Double-Precision (real64) DOT PRODUCT'
             call benchmark_one_dot_product_dp(intrinsic_dot_product_dp,         'intrinsic dot_product dp', config)

@@ -3,10 +3,8 @@ use, non_intrinsic :: constants_m, only: sp, dp
 implicit none
 private
 
-    public :: external_sdot, &
-              external_ddot, &
-              external_sgemm, &
-              external_dgemm
+    public :: external_sdot, external_ddot, &
+              external_sgemm, external_dgemm
 
     interface
 

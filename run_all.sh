@@ -2,7 +2,7 @@
 
 OUTPUT_FILE="output.csv"
 MAX_REPS=100
-N_MIN=300
+N_MIN=1
 N_MAX=300
 N_STEP=1
 
