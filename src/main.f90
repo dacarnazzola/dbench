@@ -23,12 +23,16 @@ implicit none
     if (argc > 1) then
         if (mod(argc, 2) /= 0) then
             write(stdout,'(a)') 'invalid input arguments received, valid keywords are:'
-            write(stdout,'(a)') '    --max_reps    - number of repetitions to average for benchmark results'
-            write(stdout,'(a)') '    --output_file - output file name'
-            write(stdout,'(a)') '    --delimiter   - output file delimiter'
-            write(stdout,'(a)') '    --n_min       - minimum dot product vector length/matrix multiplication side length'
-            write(stdout,'(a)') '    --n_max       - maximum dot product vector length/matrix multiplication side length'
-            write(stdout,'(a)') '    --n_step      - step size from n_min to n_max'
+            write(stdout,'(a)') '    --max_reps       - number of repetitions to average for benchmark results'
+            write(stdout,'(a)') '    --output_file    - output file name'
+            write(stdout,'(a)') '    --delimiter      - output file delimiter'
+            write(stdout,'(a)') '    --n_min          - minimum dot product vector length/matrix multiplication side length'
+            write(stdout,'(a)') '    --n_max          - maximum dot product vector length/matrix multiplication side length'
+            write(stdout,'(a)') '    --n_step         - step size from n_min to n_max'
+            write(stdout,'(a)') '    --dot_product_sp - benchmark single-precision dot product'
+            write(stdout,'(a)') '    --dot_product_dp - benchmark double-precision dot product'
+            write(stdout,'(a)') '    --matmul_sp      - benchmark single-precision matrix multiplication'
+            write(stdout,'(a)') '    --matmul_dp      - benchmark double-precision matrix multiplication'
             write(stdout,'(a,i0,a)') 'received ',argc,' arguments'
             do i=1,argc
                 call get_command_argument(i, keyword_buffer)
@@ -52,6 +56,14 @@ implicit none
                     read(argv_buffer,*) config%n_max
                 case ('--n_step')
                     read(argv_buffer,*) config%n_step
+                case ('--dot_product_sp')
+                    read(argv_buffer,*) config%dot_product_sp
+                case ('--dot_product_dp')
+                    read(argv_buffer,*) config%dot_product_dp
+                case ('--matmul_sp')
+                    read(argv_buffer,*) config%matmul_sp
+                case ('--matmul_dp')
+                    read(argv_buffer,*) config%matmul_dp
                 case default
                     write(stdout,'(a)') 'unknown keyword argument, read: "'//keyword_buffer//'"'
                     error stop 'unknown keyword argument: '//trim(adjustl(keyword_buffer))
@@ -63,8 +75,10 @@ implicit none
 
     open(newunit=config%output_fid, file=output_file, status='unknown', action='write', position='append')
     call benchmark_all(config)
+    flush(config%output_fid)
     close(config%output_fid)
 
     write(stdout,'(a)') 'COMPLETE!!'
+    flush(stdout)
 
 end program main

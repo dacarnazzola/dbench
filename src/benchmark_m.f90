@@ -19,6 +19,10 @@ private
         integer :: n_max = 256
         integer :: n_step = 8
         character :: delimiter = '|'
+        logical :: dot_product_sp = .false.
+        logical :: dot_product_dp = .false.
+        logical :: matmul_sp = .false.
+        logical :: matmul_dp = .false.
     end type
 
     interface
@@ -59,42 +63,54 @@ private
             write(stdout,'(a,i0)') 'N_MAX: ',config%n_max
             write(stdout,'(a,i0)') 'N_STEP: ',config%n_step
             write(stdout,'(a)') 'N_STEP: '//config%delimiter
+            write(stdout,'(a,l1)') 'DOT_PRODUCT_SP: ',config%dot_product_sp
+            write(stdout,'(a,l1)') 'DOT_PRODUCT_DP: ',config%dot_product_dp
+            write(stdout,'(a,l1)') 'MATMUL_SP: ',config%matmul_sp
+            write(stdout,'(a,l1)') 'MATMUL_DP: ',config%matmul_dp
         end subroutine echo_config
 
         impure subroutine benchmark_all(config)
             type(benchmark_config), intent(in) :: config
 
-            write(stdout,'(a)') 'Beginning benchmark ... Single-Precision (real32) DOT PRODUCT'
-            call benchmark_one_dot_product_sp(intrinsic_dot_product_sp,         'intrinsic dot_product sp', config)
-            call benchmark_one_dot_product_sp(           external_sdot,                    'external sdot', config)
-            call benchmark_one_dot_product_sp(               do_dot_sp,           'do-loop dot product sp', config)
-            call benchmark_one_dot_product_sp(       do_dot_unroll2_sp,'do-loop dot product urolled x2 sp', config)
-            call benchmark_one_dot_product_sp(       do_dot_unroll3_sp,'do-loop dot product urolled x3 sp', config)
-            call benchmark_one_dot_product_sp(       do_dot_unroll4_sp,'do-loop dot product urolled x4 sp', config)
-            call benchmark_one_dot_product_sp(       do_dot_unroll5_sp,'do-loop dot product urolled x5 sp', config)
-            call benchmark_one_dot_product_sp(       do_dot_unroll6_sp,'do-loop dot product urolled x6 sp', config)
-            call benchmark_one_dot_product_sp(       do_dot_unroll7_sp,'do-loop dot product urolled x7 sp', config)
-            call benchmark_one_dot_product_sp(       do_dot_unroll8_sp,'do-loop dot product urolled x8 sp', config)
+            if (config%dot_product_sp) then
+                write(stdout,'(a)') 'Beginning benchmark ... Single-Precision (real32) DOT PRODUCT'
+                call benchmark_one_dot_product_sp(intrinsic_dot_product_sp,         'intrinsic dot_product sp', config)
+                call benchmark_one_dot_product_sp(           external_sdot,                    'external sdot', config)
+                call benchmark_one_dot_product_sp(               do_dot_sp,           'do-loop dot product sp', config)
+                call benchmark_one_dot_product_sp(       do_dot_unroll2_sp,'do-loop dot product urolled x2 sp', config)
+                call benchmark_one_dot_product_sp(       do_dot_unroll3_sp,'do-loop dot product urolled x3 sp', config)
+                call benchmark_one_dot_product_sp(       do_dot_unroll4_sp,'do-loop dot product urolled x4 sp', config)
+                call benchmark_one_dot_product_sp(       do_dot_unroll5_sp,'do-loop dot product urolled x5 sp', config)
+                call benchmark_one_dot_product_sp(       do_dot_unroll6_sp,'do-loop dot product urolled x6 sp', config)
+                call benchmark_one_dot_product_sp(       do_dot_unroll7_sp,'do-loop dot product urolled x7 sp', config)
+                call benchmark_one_dot_product_sp(       do_dot_unroll8_sp,'do-loop dot product urolled x8 sp', config)
+            end if
 
-            write(stdout,'(a)') 'Beginning benchmark ... Double-Precision (real64) DOT PRODUCT'
-            call benchmark_one_dot_product_dp(intrinsic_dot_product_dp,         'intrinsic dot_product dp', config)
-            call benchmark_one_dot_product_dp(           external_ddot,                    'external ddot', config)
-            call benchmark_one_dot_product_dp(               do_dot_dp,           'do-loop dot product dp', config)
-            call benchmark_one_dot_product_dp(       do_dot_unroll2_dp,'do-loop dot product urolled x2 dp', config)
-            call benchmark_one_dot_product_dp(       do_dot_unroll3_dp,'do-loop dot product urolled x3 dp', config)
-            call benchmark_one_dot_product_dp(       do_dot_unroll4_dp,'do-loop dot product urolled x4 dp', config)
-            call benchmark_one_dot_product_dp(       do_dot_unroll5_dp,'do-loop dot product urolled x5 dp', config)
-            call benchmark_one_dot_product_dp(       do_dot_unroll6_dp,'do-loop dot product urolled x6 dp', config)
-            call benchmark_one_dot_product_dp(       do_dot_unroll7_dp,'do-loop dot product urolled x7 dp', config)
-            call benchmark_one_dot_product_dp(       do_dot_unroll8_dp,'do-loop dot product urolled x8 dp', config)
+            if (config%dot_product_dp) then
+                write(stdout,'(a)') 'Beginning benchmark ... Double-Precision (real64) DOT PRODUCT'
+                call benchmark_one_dot_product_dp(intrinsic_dot_product_dp,         'intrinsic dot_product dp', config)
+                call benchmark_one_dot_product_dp(           external_ddot,                    'external ddot', config)
+                call benchmark_one_dot_product_dp(               do_dot_dp,           'do-loop dot product dp', config)
+                call benchmark_one_dot_product_dp(       do_dot_unroll2_dp,'do-loop dot product urolled x2 dp', config)
+                call benchmark_one_dot_product_dp(       do_dot_unroll3_dp,'do-loop dot product urolled x3 dp', config)
+                call benchmark_one_dot_product_dp(       do_dot_unroll4_dp,'do-loop dot product urolled x4 dp', config)
+                call benchmark_one_dot_product_dp(       do_dot_unroll5_dp,'do-loop dot product urolled x5 dp', config)
+                call benchmark_one_dot_product_dp(       do_dot_unroll6_dp,'do-loop dot product urolled x6 dp', config)
+                call benchmark_one_dot_product_dp(       do_dot_unroll7_dp,'do-loop dot product urolled x7 dp', config)
+                call benchmark_one_dot_product_dp(       do_dot_unroll8_dp,'do-loop dot product urolled x8 dp', config)
+            end if
 
-            write(stdout,'(a)') 'Beginning benchmark ... Single-Precision (real32) MATRIX MULTIPLICATION'
-            call benchmark_one_matmul_sp(intrinsic_matmul_sp, 'intrinsic matmul sp', config)
-            call benchmark_one_matmul_sp(     external_sgemm,      'external sgemm', config)
+            if (config%matmul_sp) then
+                write(stdout,'(a)') 'Beginning benchmark ... Single-Precision (real32) MATRIX MULTIPLICATION'
+                call benchmark_one_matmul_sp(intrinsic_matmul_sp, 'intrinsic matmul sp', config)
+                call benchmark_one_matmul_sp(     external_sgemm,      'external sgemm', config)
+            end if
 
-            write(stdout,'(a)') 'Beginning benchmark ... Double-Precision (real64) MATRIX MULTIPLICATION'
-            call benchmark_one_matmul_dp(intrinsic_matmul_dp, 'intrinsic matmul dp', config)
-            call benchmark_one_matmul_dp(     external_dgemm,      'external dgemm', config)
+            if (config%matmul_dp) then
+                write(stdout,'(a)') 'Beginning benchmark ... Double-Precision (real64) MATRIX MULTIPLICATION'
+                call benchmark_one_matmul_dp(intrinsic_matmul_dp, 'intrinsic matmul dp', config)
+                call benchmark_one_matmul_dp(     external_dgemm,      'external dgemm', config)
+            end if
 
         end subroutine benchmark_all
 
@@ -105,35 +121,28 @@ private
             type(benchmark_config), intent(in) :: config
             real(sp), allocatable :: a(:), b(:)
             real(sp) :: c(config%max_reps)
-            integer(i64) :: count_rate, count1(config%max_reps), count2(config%max_reps)
+            integer(i64) :: count_rate, count1, count2
             integer :: r, n
-            real(dp) :: elapsed(config%max_reps), gflops(config%max_reps), avg_elapsed, avg_gflops
+            real(dp) :: elapsed, gflops
             size_loop: do n=config%n_min,config%n_max,config%n_step
                 if (allocated(a)) deallocate(a)
                 if (allocated(b)) deallocate(b)
                 allocate(a(n), b(n))
-                call system_clock(count_rate=count_rate)
+                call random_number(a)
+                call random_number(b)
+                call system_clock(count=count1, count_rate=count_rate)
                 test_loop: do r=1,config%max_reps
-                    call random_number(a)
-                    call random_number(b)
-                    call system_clock(count=count1(r))
                     call test(a, b, c(r))
-                    call system_clock(count=count2(r))
                 end do test_loop
+                call system_clock(count=count2)
                 elapsed = real(max(count2 - count1, 1_i64), dp)/real(count_rate, dp)
-                gflops = 2.0_dp*real(n, dp)/1.0D+9/elapsed
-                avg_elapsed = sum(elapsed)/real(config%max_reps, dp)
-                avg_gflops = sum(gflops)/real(config%max_reps, dp)
+                gflops = real(config%max_reps)*2.0_dp*real(n, dp)/1.0D+9/elapsed
                 write(stdout,'(a48,a,i0,a,i0,a,f0.2,a,e13.6,a)') label,' completed ',config%max_reps,' reps of size ',n, &
-                                                                 ' with average ',avg_gflops,' GFLOPS (',maxval(c),')'
-                flush(stdout)
+                                                                 ' with average ',gflops,' GFLOPS (',maxval(c),')'
                 write(config%output_fid,'(6a,i0,2(a,e13.6))') trim(adjustl(fc_ver())),config%delimiter, &
                                                               trim(adjustl(fc_opt())),config%delimiter, &
-                                                              label,config%delimiter, &
-                                                              n,config%delimiter, &
-                                                              avg_elapsed,config%delimiter, &
-                                                              avg_gflops
-                flush(config%output_fid)
+                                                              label,config%delimiter,n,config%delimiter, &
+                                                              elapsed,config%delimiter,gflops
             end do size_loop
         end subroutine benchmark_one_dot_product_sp
 
@@ -144,35 +153,28 @@ private
             type(benchmark_config), intent(in) :: config
             real(dp), allocatable :: a(:), b(:)
             real(dp) :: c(config%max_reps)
-            integer(i64) :: count_rate, count1(config%max_reps), count2(config%max_reps)
+            integer(i64) :: count_rate, count1, count2
             integer :: r, n
-            real(dp) :: elapsed(config%max_reps), gflops(config%max_reps), avg_elapsed, avg_gflops
+            real(dp) :: elapsed, gflops
             size_loop: do n=config%n_min,config%n_max,config%n_step
                 if (allocated(a)) deallocate(a)
                 if (allocated(b)) deallocate(b)
                 allocate(a(n), b(n))
-                call system_clock(count_rate=count_rate)
+                call random_number(a)
+                call random_number(b)
+                call system_clock(count=count1, count_rate=count_rate)
                 test_loop: do r=1,config%max_reps
-                    call random_number(a)
-                    call random_number(b)
-                    call system_clock(count=count1(r))
                     call test(a, b, c(r))
-                    call system_clock(count=count2(r))
                 end do test_loop
+                call system_clock(count=count2)
                 elapsed = real(max(count2 - count1, 1_i64), dp)/real(count_rate, dp)
-                gflops = 2.0_dp*real(n, dp)/1.0D+9/elapsed
-                avg_elapsed = sum(elapsed)/real(config%max_reps, dp)
-                avg_gflops = sum(gflops)/real(config%max_reps, dp)
+                gflops = real(config%max_reps, dp)*2.0_dp*real(n, dp)/1.0D+9/elapsed
                 write(stdout,'(a48,a,i0,a,i0,a,f0.2,a,e13.6,a)') label,' completed ',config%max_reps,' reps of size ',n, &
-                                                                 ' with average ',avg_gflops,' GFLOPS (',maxval(c),')'
-                flush(stdout)
+                                                                 ' with average ',gflops,' GFLOPS (',maxval(c),')'
                 write(config%output_fid,'(6a,i0,2(a,e13.6))') trim(adjustl(fc_ver())),config%delimiter, &
                                                               trim(adjustl(fc_opt())),config%delimiter, &
-                                                              label,config%delimiter, &
-                                                              n,config%delimiter, &
-                                                              avg_elapsed,config%delimiter, &
-                                                              avg_gflops
-                flush(config%output_fid)
+                                                              label,config%delimiter,n,config%delimiter, &
+                                                              elapsed,config%delimiter,gflops
             end do size_loop
         end subroutine benchmark_one_dot_product_dp
 
@@ -182,36 +184,29 @@ private
             character(len=*), intent(in) :: label
             type(benchmark_config), intent(in) :: config
             real(sp), allocatable :: a(:,:), b(:,:), c(:,:,:)
-            integer(i64) :: count_rate, count1(config%max_reps), count2(config%max_reps)
+            integer(i64) :: count_rate, count1, count2
             integer :: r, n
-            real(dp) :: elapsed(config%max_reps), gflops(config%max_reps), avg_elapsed, avg_gflops
+            real(dp) :: elapsed, gflops
             size_loop: do n=config%n_min,config%n_max,config%n_step
                 if (allocated(a)) deallocate(a)
                 if (allocated(b)) deallocate(b)
                 if (allocated(c)) deallocate(c)
                 allocate(a(n,n), b(n,n), c(n,n,config%max_reps))
-                call system_clock(count_rate=count_rate)
+                call random_number(a)
+                call random_number(b)
+                call system_clock(count=count1, count_rate=count_rate)
                 test_loop: do r=1,config%max_reps
-                    call random_number(a)
-                    call random_number(b)
-                    call system_clock(count=count1(r))
                     call test(a, b, c(:,:,r))
-                    call system_clock(count=count2(r))
                 end do test_loop
+                call system_clock(count=count2)
                 elapsed = real(max(count2 - count1, 1_i64), dp)/real(count_rate, dp)
-                gflops = 2.0_dp*real(n, dp)*real(n, dp)*real(n - 1, dp)/1.0D+9/elapsed
-                avg_elapsed = sum(elapsed)/real(config%max_reps, dp)
-                avg_gflops = sum(gflops)/real(config%max_reps, dp)
+                gflops = real(config%max_reps)*2.0_dp*real(n, dp)*real(n, dp)*real(n - 1, dp)/1.0D+9/elapsed
                 write(stdout,'(a48,a,i0,a,i0,a,f0.2,a,e13.6,a)') label,' completed ',config%max_reps,' reps of size ',n, &
-                                                                 ' with average ',avg_gflops,' GFLOPS (',maxval(c),')'
-                flush(stdout)
+                                                                 ' with average ',gflops,' GFLOPS (',maxval(c),')'
                 write(config%output_fid,'(6a,i0,2(a,e13.6))') trim(adjustl(fc_ver())),config%delimiter, &
                                                               trim(adjustl(fc_opt())),config%delimiter, &
-                                                              label,config%delimiter, &
-                                                              n,config%delimiter, &
-                                                              avg_elapsed,config%delimiter, &
-                                                              avg_gflops
-                flush(config%output_fid)
+                                                              label,config%delimiter,n,config%delimiter, &
+                                                              elapsed,config%delimiter,gflops
             end do size_loop
         end subroutine benchmark_one_matmul_sp
 
@@ -221,36 +216,29 @@ private
             character(len=*), intent(in) :: label
             type(benchmark_config), intent(in) :: config
             real(dp), allocatable :: a(:,:), b(:,:), c(:,:,:)
-            integer(i64) :: count_rate, count1(config%max_reps), count2(config%max_reps)
+            integer(i64) :: count_rate, count1, count2
             integer :: r, n
-            real(dp) :: elapsed(config%max_reps), gflops(config%max_reps), avg_elapsed, avg_gflops
+            real(dp) :: elapsed, gflops
             size_loop: do n=config%n_min,config%n_max,config%n_step
                 if (allocated(a)) deallocate(a)
                 if (allocated(b)) deallocate(b)
                 if (allocated(c)) deallocate(c)
                 allocate(a(n,n), b(n,n), c(n,n,config%max_reps))
-                call system_clock(count_rate=count_rate)
+                call random_number(a)
+                call random_number(b)
+                call system_clock(count=count1, count_rate=count_rate)
                 test_loop: do r=1,config%max_reps
-                    call random_number(a)
-                    call random_number(b)
-                    call system_clock(count=count1(r))
                     call test(a, b, c(:,:,r))
-                    call system_clock(count=count2(r))
                 end do test_loop
+                call system_clock(count=count2)
                 elapsed = real(max(count2 - count1, 1_i64), dp)/real(count_rate, dp)
-                gflops = 2.0_dp*real(n, dp)*real(n, dp)*real(n - 1, dp)/1.0D+9/elapsed
-                avg_elapsed = sum(elapsed)/real(config%max_reps, dp)
-                avg_gflops = sum(gflops)/real(config%max_reps, dp)
+                gflops = real(config%max_reps)*2.0_dp*real(n, dp)*real(n, dp)*real(n - 1, dp)/1.0D+9/elapsed
                 write(stdout,'(a48,a,i0,a,i0,a,f0.2,a,e13.6,a)') label,' completed ',config%max_reps,' reps of size ',n, &
-                                                                 ' with average ',avg_gflops,' GFLOPS (',maxval(c),')'
-                flush(stdout)
+                                                                 ' with average ',gflops,' GFLOPS (',maxval(c),')'
                 write(config%output_fid,'(6a,i0,2(a,e13.6))') trim(adjustl(fc_ver())),config%delimiter, &
                                                               trim(adjustl(fc_opt())),config%delimiter, &
-                                                              label,config%delimiter, &
-                                                              n,config%delimiter, &
-                                                              avg_elapsed,config%delimiter, &
-                                                              avg_gflops
-                flush(config%output_fid)
+                                                              label,config%delimiter,n,config%delimiter, &
+                                                              elapsed,config%delimiter,gflops
             end do size_loop
         end subroutine benchmark_one_matmul_dp
 
