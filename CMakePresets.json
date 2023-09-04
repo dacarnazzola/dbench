@@ -20,7 +20,7 @@
       }
     },
     {
-      "name": "release-gfortran-openblas",
+      "name": "gfortran-openblas",
       "displayName": "gfortran RELEASE (OpenBLAS)",
       "description": "release options for building with gfortran + OpenBLAS",
       "generator": "Ninja",
@@ -33,7 +33,7 @@
       }
     },
     {
-      "name": "release-ifort-openblas",
+      "name": "ifort-openblas",
       "displayName": "ifort RELEASE (OpenBLAS)",
       "description": "release options for building with ifort + OpenBLAS",
       "generator": "Ninja",
@@ -46,7 +46,7 @@
       }
     },
     {
-      "name": "release-ifort-mkl",
+      "name": "ifort-mkl",
       "displayName": "ifort RELEASE (MKL)",
       "description": "release options for building with ifort + MKL",
       "generator": "Ninja",
@@ -59,7 +59,7 @@
       }
     },
     {
-      "name": "release-ifx-openblas",
+      "name": "ifx-openblas",
       "displayName": "ifx RELEASE (OpenBLAS)",
       "description": "release options for building with ifx + OpenBLAS",
       "generator": "Ninja",
@@ -72,7 +72,7 @@
       }
     },
     {
-      "name": "release-ifx-mkl",
+      "name": "ifx-mkl",
       "displayName": "ifx RELEASE (MKL)",
       "description": "release options for building with ifx + MKL",
       "generator": "Ninja",
@@ -85,7 +85,7 @@
       }
     },
     {
-      "name": "release-flang-openblas",
+      "name": "flang-openblas",
       "displayName": "flang RELEASE (OpenBLAS)",
       "description": "release options for building with flang + OpenBLAS",
       "generator": "Ninja",

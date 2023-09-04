@@ -3,6 +3,7 @@ set(MODULE_FILES
     constants_m.f90
     language_intrinsic_functions_m.f90
     external_blas_m.f90
+    user_dot_product_m.f90
     benchmark_m.f90
    )
 

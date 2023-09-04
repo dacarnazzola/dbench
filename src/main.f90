@@ -29,6 +29,12 @@ implicit none
             write(stdout,'(a)') '    --n_min       - minimum dot product vector length/matrix multiplication side length'
             write(stdout,'(a)') '    --n_max       - maximum dot product vector length/matrix multiplication side length'
             write(stdout,'(a)') '    --n_step      - step size from n_min to n_max'
+            write(stdout,'(a,i0,a)') 'received ',argc,' arguments'
+            do i=1,argc
+                call get_command_argument(i, keyword_buffer)
+                write(stdout,'(a,i0,a)') 'argument ',i,': '//keyword_buffer
+            end do
+            error stop 'try again'
         end if
         do i=1,argc,2
             call get_command_argument(i, keyword_buffer)
@@ -54,7 +60,7 @@ implicit none
     end if
 
     call echo_config(config)
-    
+
     open(newunit=config%output_fid, file=output_file, status='unknown', action='write', position='append')
     call benchmark_all(config)
     close(config%output_fid)

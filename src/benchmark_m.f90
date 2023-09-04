@@ -8,6 +8,14 @@ use, non_intrinsic :: external_blas_m, only: external_sdot, &
                                              external_ddot, &
                                              external_sgemm, &
                                              external_dgemm
+use, non_intrinsic :: user_dot_product_m, only: do_dot_dp, &
+                                                do_dot_unroll2_dp, &
+                                                do_dot_unroll3_dp, &
+                                                do_dot_unroll4_dp, &
+                                                do_dot_unroll5_dp, &
+                                                do_dot_unroll6_dp, &
+                                                do_dot_unroll7_dp, &
+                                                do_dot_unroll8_dp
 implicit none
 private
 
@@ -26,26 +34,26 @@ private
 
         pure subroutine dot_product_sp(a, b, c)
             import sp; implicit none
-            real(sp), intent(in) :: a(:), b(:)
+            real(sp), intent(in) :: a(:), b(size(a))
             real(sp), intent(out) :: c
         end subroutine
 
         pure subroutine dot_product_dp(a, b, c)
             import dp; implicit none
-            real(dp), intent(in) :: a(:), b(:)
+            real(dp), intent(in) :: a(:), b(size(a))
             real(dp), intent(out) :: c
         end subroutine
 
         pure subroutine matmul_sp(a, b, c)
             import sp; implicit none
             real(sp), intent(in) :: a(:,:), b(:,:)
-            real(sp), intent(out) :: c(:,:)
+            real(sp), intent(out) :: c(size(a,1),size(b,2))
         end subroutine
 
         pure subroutine matmul_dp(a, b, c)
             import dp; implicit none
             real(dp), intent(in) :: a(:,:), b(:,:)
-            real(dp), intent(out) :: c(:,:)
+            real(dp), intent(out) :: c(size(a,1),size(b,2))
         end subroutine
 
     end interface
@@ -70,8 +78,16 @@ private
             call benchmark_one_dot_product_sp(           external_sdot,            'external sdot', config)
 
             write(stdout,'(a)') 'Beginning benchmark ... Double-Precision (real64) DOT PRODUCT'
-            call benchmark_one_dot_product_dp(intrinsic_dot_product_dp, 'intrinsic dot_product dp', config)
-            call benchmark_one_dot_product_dp(           external_ddot,            'external ddot', config)
+            call benchmark_one_dot_product_dp(intrinsic_dot_product_dp,         'intrinsic dot_product dp', config)
+            call benchmark_one_dot_product_dp(           external_ddot,                    'external ddot', config)
+            call benchmark_one_dot_product_dp(               do_dot_dp,           'do-loop dot product dp', config)
+            call benchmark_one_dot_product_dp(       do_dot_unroll2_dp,'do-loop dot product urolled x2 dp', config)
+            call benchmark_one_dot_product_dp(       do_dot_unroll3_dp,'do-loop dot product urolled x3 dp', config)
+            call benchmark_one_dot_product_dp(       do_dot_unroll4_dp,'do-loop dot product urolled x4 dp', config)
+            call benchmark_one_dot_product_dp(       do_dot_unroll5_dp,'do-loop dot product urolled x5 dp', config)
+            call benchmark_one_dot_product_dp(       do_dot_unroll6_dp,'do-loop dot product urolled x6 dp', config)
+            call benchmark_one_dot_product_dp(       do_dot_unroll7_dp,'do-loop dot product urolled x7 dp', config)
+            call benchmark_one_dot_product_dp(       do_dot_unroll8_dp,'do-loop dot product urolled x8 dp', config)
 
             write(stdout,'(a)') 'Beginning benchmark ... Single-Precision (real32) MATRIX MULTIPLICATION'
             call benchmark_one_matmul_sp(intrinsic_matmul_sp, 'intrinsic matmul sp', config)
@@ -109,7 +125,7 @@ private
                 gflops = 2.0_dp*real(n, dp)/1.0D+9/elapsed
                 avg_elapsed = sum(elapsed)/real(config%max_reps, dp)
                 avg_gflops = sum(gflops)/real(config%max_reps, dp)
-                write(stdout,'(a32,a,i0,a,i0,a,f0.2,a,e13.6,a)') label,' completed ',config%max_reps,' reps of size ',n, &
+                write(stdout,'(a48,a,i0,a,i0,a,f0.2,a,e13.6,a)') label,' completed ',config%max_reps,' reps of size ',n, &
                                                                  ' with average ',avg_gflops,' GFLOPS (',maxval(c),')'
                 flush(stdout)
                 write(config%output_fid,'(6a,i0,2(a,e13.6))') trim(adjustl(fc_ver())),config%delimiter, &
@@ -148,7 +164,7 @@ private
                 gflops = 2.0_dp*real(n, dp)/1.0D+9/elapsed
                 avg_elapsed = sum(elapsed)/real(config%max_reps, dp)
                 avg_gflops = sum(gflops)/real(config%max_reps, dp)
-                write(stdout,'(a32,a,i0,a,i0,a,f0.2,a,e13.6,a)') label,' completed ',config%max_reps,' reps of size ',n, &
+                write(stdout,'(a48,a,i0,a,i0,a,f0.2,a,e13.6,a)') label,' completed ',config%max_reps,' reps of size ',n, &
                                                                  ' with average ',avg_gflops,' GFLOPS (',maxval(c),')'
                 flush(stdout)
                 write(config%output_fid,'(6a,i0,2(a,e13.6))') trim(adjustl(fc_ver())),config%delimiter, &
@@ -187,7 +203,7 @@ private
                 gflops = 2.0_dp*real(n, dp)*real(n, dp)*real(n - 1, dp)/1.0D+9/elapsed
                 avg_elapsed = sum(elapsed)/real(config%max_reps, dp)
                 avg_gflops = sum(gflops)/real(config%max_reps, dp)
-                write(stdout,'(a32,a,i0,a,i0,a,f0.2,a,e13.6,a)') label,' completed ',config%max_reps,' reps of size ',n, &
+                write(stdout,'(a48,a,i0,a,i0,a,f0.2,a,e13.6,a)') label,' completed ',config%max_reps,' reps of size ',n, &
                                                                  ' with average ',avg_gflops,' GFLOPS (',maxval(c),')'
                 flush(stdout)
                 write(config%output_fid,'(6a,i0,2(a,e13.6))') trim(adjustl(fc_ver())),config%delimiter, &
@@ -226,7 +242,7 @@ private
                 gflops = 2.0_dp*real(n, dp)*real(n, dp)*real(n - 1, dp)/1.0D+9/elapsed
                 avg_elapsed = sum(elapsed)/real(config%max_reps, dp)
                 avg_gflops = sum(gflops)/real(config%max_reps, dp)
-                write(stdout,'(a32,a,i0,a,i0,a,f0.2,a,e13.6,a)') label,' completed ',config%max_reps,' reps of size ',n, &
+                write(stdout,'(a48,a,i0,a,i0,a,f0.2,a,e13.6,a)') label,' completed ',config%max_reps,' reps of size ',n, &
                                                                  ' with average ',avg_gflops,' GFLOPS (',maxval(c),')'
                 flush(stdout)
                 write(config%output_fid,'(6a,i0,2(a,e13.6))') trim(adjustl(fc_ver())),config%delimiter, &

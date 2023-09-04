@@ -43,26 +43,26 @@ private
     contains
 
         pure subroutine external_sdot(a, b, c)
-            real(sp), intent(in) :: a(:), b(:)
+            real(sp), intent(in) :: a(:), b(size(a))
             real(sp), intent(out) :: c
             c = sdot(size(a), a, 1, b, 1)
         end subroutine
 
         pure subroutine external_ddot(a, b, c)
-            real(dp), intent(in) :: a(:), b(:)
+            real(dp), intent(in) :: a(:), b(size(a))
             real(dp), intent(out) :: c
             c = ddot(size(a), a, 1, b, 1)
         end subroutine
 
         pure subroutine external_sgemm(a, b, c)
             real(sp), intent(in) :: a(:,:), b(:,:)
-            real(sp), intent(out) :: c(:,:)
+            real(sp), intent(out) :: c(size(a,1),size(b,2))
             call sgemm('n', 'n', size(a,1), size(b,2), size(a,2), 1.0_sp, a, size(a,1), b, size(b,1), 0.0_sp, c, size(c,1))
         end subroutine
 
         pure subroutine external_dgemm(a, b, c)
             real(dp), intent(in) :: a(:,:), b(:,:)
-            real(dp), intent(out) :: c(:,:)
+            real(dp), intent(out) :: c(size(a,1),size(b,2))
             call dgemm('n', 'n', size(a,1), size(b,2), size(a,2), 1.0_dp, a, size(a,1), b, size(b,1), 0.0_dp, c, size(c,1))
         end subroutine
 
