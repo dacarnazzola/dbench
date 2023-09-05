@@ -1,4 +1,5 @@
 Check CMakePresets.json for available presets; current options include:
+```
     debug             - debugging build using gfortran
     gfortran-openblas - optimized build using gfortran, linking against OpenBLAS
     ifort-openblas    - optimized build using ifort, linking against OpenBLAS
@@ -6,18 +7,17 @@ Check CMakePresets.json for available presets; current options include:
     ifx-openblas      - optimized build using ifx, linking against OpenBLAS
     ifx-mkl           - optimized build using ifx, linking against Intel MKL
     flang-openblas    - optimized build using Flang, linking against OpenBLAS
+```
 
 NOTE: Link-time optimization (-flto on gfortran/flang, -ipo on ifort/ifx) is disabled to prevent inlining benchmark functions from
       their original modules.
 
-to create build/ folder:
-    cmake --preset=<preset-name>
+to create build/ folder: `cmake --preset=<preset-name>`
 
-to build executables:
-    cmake --build build
+to build executables: `cmake --build build`
 
 to add new dot product/matrix multiplication implementations, follow the interfaces defined below:
-```
+```fortran
         pure subroutine dot_product_sp(a, b, c)
             import sp; implicit none
             real(sp), intent(in) :: a(:), b(size(a))
