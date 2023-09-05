@@ -1,6 +1,6 @@
 program main
 use, non_intrinsic :: constants_m, only: stdout, i64
-use, non_intrinsic :: benchmark_m, only: benchmark_config, echo_config, benchmark_all
+use, non_intrinsic :: benchmark_m, only: benchmark_config, echo_config, setup_output_file, benchmark_all
 implicit none
 
     type(benchmark_config) :: config
@@ -73,7 +73,8 @@ implicit none
 
     call echo_config(config)
 
-    open(newunit=config%output_fid, file=output_file, status='unknown', action='write', position='append')
+!!    open(newunit=config%output_fid, file=output_file, status='unknown', action='write', position='append')
+    call setup_output_file(config, output_file)
     call benchmark_all(config)
     flush(config%output_fid)
     close(config%output_fid)

@@ -10,7 +10,7 @@ use, non_intrinsic :: user_dot_product_m, only: do_dot_sp, do_dot_dp, do_dot_unr
 implicit none
 private
 
-    public :: benchmark_config, echo_config, benchmark_all
+    public :: benchmark_config, echo_config, setup_output_file, benchmark_all
 
     type :: benchmark_config
         integer :: max_reps = 10
@@ -68,6 +68,23 @@ private
             write(stdout,'(a,l1)') 'MATMUL_SP: ',config%matmul_sp
             write(stdout,'(a,l1)') 'MATMUL_DP: ',config%matmul_dp
         end subroutine echo_config
+
+
+        impure subroutine setup_output_file(config, output_file)
+            type(benchmark_config), intent(inout) :: config
+            character(len=*), intent(in) :: output_file
+            integer :: iostat
+            open(newunit=config%output_fid, file=output_file, status='new', action='write', iostat=iostat)
+            if (iostat /= 0) then !! failed to open NEW file, it maybe already exists
+                open(newunit=config%output_fid, file=output_file, status='old', action='write', position='append', iostat=iostat)
+                if (iostat /= 0) then !! failed to open ANY file, abort...
+                    error stop 'error opening '//output_file
+                end if
+            else !! successfully opened new file, so write the header
+                write(config%output_fid,'(a)') 'compiler,options,method,n,gflops'
+            end if
+        end subroutine setup_output_file
+
 
         impure subroutine benchmark_all(config)
             type(benchmark_config), intent(in) :: config
@@ -137,12 +154,7 @@ private
                 call system_clock(count=count2)
                 elapsed = real(max(count2 - count1, 1_i64), dp)/real(count_rate, dp)
                 gflops = real(config%max_reps)*2.0_dp*real(n, dp)/1.0D+9/elapsed
-                write(stdout,'(a48,a,i0,a,i0,a,f0.2,a,e13.6,a)') label,' completed ',config%max_reps,' reps of size ',n, &
-                                                                 ' with average ',gflops,' GFLOPS (',maxval(c),')'
-                write(config%output_fid,'(6a,i0,2(a,e13.6))') trim(adjustl(fc_ver())),config%delimiter, &
-                                                              trim(adjustl(fc_opt())),config%delimiter, &
-                                                              label,config%delimiter,n,config%delimiter, &
-                                                              elapsed,config%delimiter,gflops
+                call write_output(config, label, n, gflops, real(maxval(c), dp))
             end do size_loop
         end subroutine benchmark_one_dot_product_sp
 
@@ -169,12 +181,7 @@ private
                 call system_clock(count=count2)
                 elapsed = real(max(count2 - count1, 1_i64), dp)/real(count_rate, dp)
                 gflops = real(config%max_reps, dp)*2.0_dp*real(n, dp)/1.0D+9/elapsed
-                write(stdout,'(a48,a,i0,a,i0,a,f0.2,a,e13.6,a)') label,' completed ',config%max_reps,' reps of size ',n, &
-                                                                 ' with average ',gflops,' GFLOPS (',maxval(c),')'
-                write(config%output_fid,'(6a,i0,2(a,e13.6))') trim(adjustl(fc_ver())),config%delimiter, &
-                                                              trim(adjustl(fc_opt())),config%delimiter, &
-                                                              label,config%delimiter,n,config%delimiter, &
-                                                              elapsed,config%delimiter,gflops
+                call write_output(config, label, n, gflops, real(maxval(c), dp))
             end do size_loop
         end subroutine benchmark_one_dot_product_dp
 
@@ -201,12 +208,7 @@ private
                 call system_clock(count=count2)
                 elapsed = real(max(count2 - count1, 1_i64), dp)/real(count_rate, dp)
                 gflops = real(config%max_reps)*2.0_dp*real(n, dp)*real(n, dp)*real(n - 1, dp)/1.0D+9/elapsed
-                write(stdout,'(a48,a,i0,a,i0,a,f0.2,a,e13.6,a)') label,' completed ',config%max_reps,' reps of size ',n, &
-                                                                 ' with average ',gflops,' GFLOPS (',maxval(c),')'
-                write(config%output_fid,'(6a,i0,2(a,e13.6))') trim(adjustl(fc_ver())),config%delimiter, &
-                                                              trim(adjustl(fc_opt())),config%delimiter, &
-                                                              label,config%delimiter,n,config%delimiter, &
-                                                              elapsed,config%delimiter,gflops
+                call write_output(config, label, n, gflops, real(maxval(c), dp))
             end do size_loop
         end subroutine benchmark_one_matmul_sp
 
@@ -233,13 +235,21 @@ private
                 call system_clock(count=count2)
                 elapsed = real(max(count2 - count1, 1_i64), dp)/real(count_rate, dp)
                 gflops = real(config%max_reps)*2.0_dp*real(n, dp)*real(n, dp)*real(n - 1, dp)/1.0D+9/elapsed
-                write(stdout,'(a48,a,i0,a,i0,a,f0.2,a,e13.6,a)') label,' completed ',config%max_reps,' reps of size ',n, &
-                                                                 ' with average ',gflops,' GFLOPS (',maxval(c),')'
-                write(config%output_fid,'(6a,i0,2(a,e13.6))') trim(adjustl(fc_ver())),config%delimiter, &
-                                                              trim(adjustl(fc_opt())),config%delimiter, &
-                                                              label,config%delimiter,n,config%delimiter, &
-                                                              elapsed,config%delimiter,gflops
+                call write_output(config, label, n, gflops, real(maxval(c), dp))
             end do size_loop
         end subroutine benchmark_one_matmul_dp
+
+
+        impure subroutine write_output(config, label, n, gflops, maxval_c)
+            type(benchmark_config), intent(in) :: config
+            character(len=*), intent(in) :: label
+            integer, intent(in) :: n
+            real(dp), intent(in) :: gflops, maxval_c
+            write(stdout,'(a48,a,i0,a,i0,a,f0.2,a,e13.6,a)') label,' completed ',config%max_reps,' reps of size ',n, &
+                                                             ' with average ',gflops,' GFLOPS (',maxval_c,')'
+            write(config%output_fid,'(6a,i0,a,e13.6)') trim(adjustl(fc_ver())),config%delimiter, &
+                                                          trim(adjustl(fc_opt())),config%delimiter,label,config%delimiter,n, &
+                                                          config%delimiter,gflops
+        end subroutine write_output
 
 end module benchmark_m
